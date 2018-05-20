@@ -9,7 +9,7 @@ td {
 tr:nth-child(even) {
   background-color: #4C8BF5;
   cursor: pointer;
-  height: 0.75em;
+  height: 0.35em;
 }
 tr {
   border: 1px solid #4C8BF5;
