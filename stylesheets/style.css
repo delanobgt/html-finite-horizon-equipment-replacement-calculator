@@ -1,18 +1,22 @@
 table {
   empty-cells: show;
   border-collapse: collapse;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  border: 0.5em solid lightgray;
 }
 td {
   text-align: center;
   vertical-align: middle;
 }
 tr:nth-child(even) {
-  background-color: #4C8BF5;
+  background-color: lightgray;
   cursor: pointer;
   height: 0.35em;
 }
 tr {
-  border: 1px solid #4C8BF5;
+  
 }
 input {
   height: 2em;

@@ -56,13 +56,14 @@ let TcTableDOM = (function() {
     }
 
     function _makeInputRow() {
-      let $newRemoveBtn = $('<input></input>').attr({type: 'button', value: 'X'});
-      $newRemoveBtn.click(() => {
-        let $removableInputRow = $newRemoveBtn.closest('tr');
-        let $removableAddingRow = $removableInputRow.next();
-        $removableInputRow.hideDown({remove: true});
-        $removableAddingRow.hideDown({remove: true});
-      });
+      let $newRemoveBtn = $('<input></input>')
+                            .attr({type: 'button', value: 'X'})
+                            .click(function() {
+                              let $removableInputRow = $(this).closest('tr');
+                              let $removableAddingRow = $removableInputRow.next();
+                              $removableInputRow.hideDown({remove: true});
+                              $removableAddingRow.hideDown({remove: true});
+                            });
       let $newTextbox = $('<input></input>')
                           .attr({type: 'text', value: '0', placeholder: '0'}).prop('required', true)
                           .on('input', function(e) {
@@ -108,16 +109,26 @@ let TcTableDOM = (function() {
 
     function _makeAddingRow() {
       let $newAddingRow = $('<tr></tr>').append(
-                            $('<td></td>').attr('colspan', 2)
-                          );
-      $newAddingRow.dblclick(() => {
-        let $newInputRow = _makeInputRow()
-                            .insertAfter($newAddingRow)
-                            .showUp();
-        _makeAddingRow()
-          .insertAfter($newInputRow)
-          .showUp();
-      });
+                            $('<td></td>')
+                              .attr('colspan', 2)
+                              .mouseenter(function() {
+                                let context = this;
+                                $(this).animate({height: '0.8em'}, 0, function() {
+                                  $(context).html('Add row here');
+                                });
+                              }).mouseleave(function() {
+                                let context = this;
+                                $(context).empty();
+                                $(this).animate({height: '0.35em'}, 100);
+                              })
+                          ).click(function() {
+                            let $newInputRow = _makeInputRow()
+                                                .insertAfter($(this))
+                                                .showUp();
+                            _makeAddingRow()
+                              .insertAfter($newInputRow)
+                              .showUp();
+                          });
       return $newAddingRow.hideDown({instant: true}).delay(200);
     }
 
@@ -126,7 +137,7 @@ let TcTableDOM = (function() {
       $table.find('input[type="text"]').each(function(index) {
         tcList.push(Number($(this).val()));
       });
-      console.log(tcList);
+      return tcList;
     }
 
     //public-ly exposed function
