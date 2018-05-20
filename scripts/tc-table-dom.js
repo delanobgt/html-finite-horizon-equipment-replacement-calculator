@@ -4,30 +4,40 @@ let TcTableDOM = (function() {
     let $table;
     
     // add custom jQuery plugin for show/hide functionality
-    $.fn.showUp = function() {
+    $.fn.showUp = function(callback) {
+      let delay = 80;
       if (this.find('input').length) {
         let context = this;
-        context.slideDown(0, () => context.find('input').slideDown());
+        if (callback) context.slideDown(0, () => context.find('input').slideDown(delay, callback));
+        else context.slideDown(0, () => context.find('input').slideDown(delay));
         return context;
       } else {
-        this.slideDown();
+        if (callback) this.slideDown(delay, callback);
+        else this.slideDown(delay);
         return this;
       }
     };
-    $.fn.hideDown = function(options) {
-      if (this.find('input').length) {
-        let context = this;
-        let delay = (options && options.instant) ? 0 : 500;
-        context.find('input').slideUp(delay, () => {
-          context.slideUp(0, () => {
-            if (options && options.remove) context.remove();
+    $.fn.hideDown = function(options, callback) {
+      let delay = 80;
+      let context = this;
+      if (this.find('input').length) { // for textboxes
+        let curDelay = (options && options.instant) ? 0 : delay;
+        this.find('input').slideUp(curDelay, function() {
+          context.slideUp(0, function() {
+            if (options && options.remove) {
+              if (callback) $.when(context.remove()).then(callback());
+              else context.remove();
+            }
           });
         });
         return context;
-      } else {
-        let delay = (options && options.instant) ? 0 : 500;
-        this.slideUp(delay, () => {
-          if(options && options.remove) this.remove();
+      } else {  // for adding rows
+        let curDelay = (options && options.instant) ? 0 : 50;
+        this.slideUp(curDelay, () => {
+          if(options && options.remove) {
+            if (callback) $.when(this.remove()).then(callback());
+            else this.remove();
+          }
         });
         return this;
       }
@@ -41,7 +51,11 @@ let TcTableDOM = (function() {
 
       //add a header
       $('<tr></tr>').append(
-        $('<th></th>').attr('colspan', 2).text('TC')
+        $('<th></th>').text('EoY')
+      ).append(
+        $('<th></th>').text('TC') 
+      ).append(
+        $('<th></th>').text('')
       ).appendTo($table);
 
       //add some rows to it
@@ -52,18 +66,11 @@ let TcTableDOM = (function() {
         _makeAddingRow()
           .appendTo($table)
           .showUp();
+        _updateEoY();
       }
     }
 
     function _makeInputRow() {
-      let $newRemoveBtn = $('<input></input>')
-                            .attr({type: 'button', value: 'X'})
-                            .click(function() {
-                              let $removableInputRow = $(this).closest('tr');
-                              let $removableAddingRow = $removableInputRow.next();
-                              $removableInputRow.hideDown({remove: true});
-                              $removableAddingRow.hideDown({remove: true});
-                            });
       let $newTextbox = $('<input></input>')
                           .attr({type: 'text', value: '0', placeholder: '0'}).prop('required', true)
                           .on('input', function(e) {
@@ -95,7 +102,17 @@ let TcTableDOM = (function() {
                           .focusout(function() {
                             if ($(this).val().trim() === '') $(this).val('0');
                           });
+      let $newRemoveBtn = $('<input></input>')
+                            .attr({type: 'button', value: 'X'})
+                            .click(function() {
+                              let $removableInputRow = $(this).closest('tr');
+                              let $removableAddingRow = $removableInputRow.next();
+                              $removableAddingRow.hideDown({remove: true});
+                              $removableInputRow.hideDown({remove: true}, _updateEoY);
+                            });
       let $newInputRow =  $('<tr></tr>').append(
+                            $('<td></td>')
+                          ).append(
                             $('<td></td>').append(
                               $newTextbox
                             )
@@ -104,32 +121,33 @@ let TcTableDOM = (function() {
                               $newRemoveBtn
                             )
                           );
-      return $newInputRow.hideDown({instant: true}).delay(200);
+      return $newInputRow.hideDown({instant: true}).delay(30);
     }
 
     function _makeAddingRow() {
       let $newAddingRow = $('<tr></tr>').append(
                             $('<td></td>')
-                              .attr('colspan', 2)
+                              .attr('colspan', 3)
                               .mouseenter(function() {
-                                let context = this;
-                                $(this).animate({height: '0.8em'}, 0, function() {
-                                  $(context).html('Add row here');
-                                });
+                                $(this).css({background: 'blue'});
                               }).mouseleave(function() {
-                                let context = this;
-                                $(context).empty();
-                                $(this).animate({height: '0.35em'}, 100);
+                                $(this).css({background: 'lightgray'});
                               })
-                          ).click(function() {
+                          ).mousedown(function() {
                             let $newInputRow = _makeInputRow()
                                                 .insertAfter($(this))
                                                 .showUp();
                             _makeAddingRow()
                               .insertAfter($newInputRow)
-                              .showUp();
+                              .showUp(_updateEoY);
                           });
-      return $newAddingRow.hideDown({instant: true}).delay(200);
+      return $newAddingRow.hideDown({instant: true}).delay(30);
+    }
+
+    function _updateEoY() {
+      $table.find('tr:nth-child(2n-1) td:nth-child(1)').each(function(index) {
+        $(this).text(index);
+      });
     }
 
     function getTcList() {

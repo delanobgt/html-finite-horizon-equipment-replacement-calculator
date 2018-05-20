@@ -1,10 +1,14 @@
+/* * {
+  padding: 0;
+  margin: 0;
+} */
 table {
   empty-cells: show;
   border-collapse: collapse;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
-  border: 0.5em solid lightgray;
+  border: 0.85em solid lightgray;
 }
 td {
   text-align: center;
@@ -13,7 +17,7 @@ td {
 tr:nth-child(even) {
   background-color: lightgray;
   cursor: pointer;
-  height: 0.35em;
+  height: 0.55em;
 }
 tr {
   
