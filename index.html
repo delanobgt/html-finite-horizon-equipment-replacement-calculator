@@ -6,16 +6,28 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Finite Horizon Equipment Replacement Calculator</title>
   <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
   <h1>Finite Horizon Equipment Replacement Calculator</h1>
-  <h2>Defender</h2>
-  <table id="table_defender"></table>
 
+  MARR: <input id="marr_text" type="text" value="10">
+
+  <h2>Defender</h2>
+  <!-- <table id="table_defender"></table> -->
+  <table id="table_challenger"></table>
+
+  <script src="scripts/lib/double-underscore.js"></script>
   <script src="scripts/lib/jquery-3.3.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="scripts/jquery-plugins/custom-jquery-plugin.js"></script>
+  <script src="scripts/components/decimal-textbox.js"></script>
   <script src="scripts/tc-table-dom.js"></script>
+  <script src="scripts/fat-table-dom.js"></script>
   <script>
     let defenderTable = TcTableDOM.bind({tableId: 'table_defender'});
+    let challengerTable = FatTableDOM.bind({tableId: 'table_challenger', marrTextId: 'marr_text'});
   </script>
 </body>
 </html>
