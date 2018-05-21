@@ -24,12 +24,23 @@
   <script src="scripts/jquery-plugins/custom-jquery-plugin.js"></script>
   <script src="scripts/components/integer-textbox.js"></script>
   <script src="scripts/components/decimal-textbox.js"></script>
-  <script src="scripts/tc-table-dom.js"></script>
-  <script src="scripts/fat-table-dom.js"></script>
+  <script src="scripts/components/tc-table-dom.js"></script>
+  <script src="scripts/components/fat-table-dom.js"></script>
+  <script src="scripts/components/entity.js"></script>
   <script>
-    let defenderTable = TcTableDOM.bind({tableId: 'table_defender'});
-    let challengerTable = FatTableDOM.bind({tableId: 'table_challenger', marrTextId: 'marr_text'});
-    IntegerTextbox.bind({id: 'marr_text', maxValue: 100});
+    // let defenderTable = TcTable.bind({tableId: 'table_defender'});
+    // let challengerTable = FatTable.bind({tableId: 'table_challenger', marrTextId: 'marr_text'});
+    IntegerTextbox.bind({
+      id: 'marr_text', 
+      maxValue: 100, 
+      callback: function() {
+        //todo
+      }
+    });
+    $('body').append(Entity.$manufacture({tableType: 'tc'}).$DOM);
+    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
+    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
+    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
   </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 let DecimalTextbox = (function() {
   function _applyBehaviorTo($node, callback) {
     return  $node
-              .attr({type: 'text', value: '0'}).prop('required', true)
+              .attr({type: 'text', value: '0'})
+              .prop('required', true)
               .on('input', function(e) {
                 let $this = $(this);
                 let val = $this.val();

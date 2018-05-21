@@ -149,7 +149,8 @@ let FatTableDOM = (function() {
 
     //public-ly exposed function
     return {
-      getTcList: getTcList
+      getTcList: getTcList,
+      updateTableValues: _updateTableValues
     };
   }
 
