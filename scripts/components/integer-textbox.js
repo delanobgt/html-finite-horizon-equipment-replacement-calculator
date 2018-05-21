@@ -1,18 +1,13 @@
-let DecimalTextbox = (function() {
-  function _applyBehaviorTo($node, callback) {
+let IntegerTextbox = (function() {
+  function _applyBehaviorTo($node, options) {
     return  $node
               .attr({type: 'text', value: '0'}).prop('required', true)
               .on('input', function(e) {
                 let $this = $(this);
                 let val = $this.val();
                 //multiple decimal string filters
-                if (val === '.') val = '0.';
                 val = val.trim();
-                val = val.replace(/[^0-9\.]+/g, '');
-                while ((val.match(new RegExp('\\.', 'g')) || []).length > 1) {
-                  let lastCommaIndex = val.lastIndexOf('.');
-                  val = val.slice(0, lastCommaIndex) + val.slice(lastCommaIndex+1, val.length);
-                }
+                val = val.replace(/[^0-9]+/g, '');
                 {
                   let matches = val.match(/^(0+).*/);
                   if (matches && matches[1]) {
@@ -24,8 +19,12 @@ let DecimalTextbox = (function() {
                     }
                   }
                 }
+                if (options.maxValue) {
+                  while (Number(val) > options.maxValue)
+                    val = val.slice(0, -1);
+                }
                 $this.val(val);
-                if (callback) callback();
+                if (options.callback) options.callback();
               })
               .focusin(function() {
                 if ($(this).val().trim() === '0') $(this).val('');
@@ -36,14 +35,12 @@ let DecimalTextbox = (function() {
   }
 
   function bind(options) {
-    if (options.id) _applyBehaviorTo($('#'+options.id));
-    else if (options.id && options.callback) _applyBehaviorTo($('#'+options.id), options.callback);
-    else if (options.$object) _applyBehaviorTo($(options.$object));
-    else if (options.$object && options.callback) _applyBehaviorTo($(options.$object), options.callback);
+    if (options.id) _applyBehaviorTo($('#'+options.id), options);
+    else if (options.$object) _applyBehaviorTo($(options.$object), options);
   }
 
-  function manufacture(callback) {
-    return _applyBehaviorTo($('<input></input>'), callback);     
+  function manufacture(options) {
+    return _applyBehaviorTo($('<input></input>'), options || {});
   }
 
   return {

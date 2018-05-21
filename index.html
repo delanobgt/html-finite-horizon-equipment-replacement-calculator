@@ -14,7 +14,7 @@
   MARR: <input id="marr_text" type="text" value="10">
 
   <h2>Defender</h2>
-  <!-- <table id="table_defender"></table> -->
+  <!-- <table id="table_defender"></table><br> -->
   <table id="table_challenger"></table>
 
   <script src="scripts/lib/double-underscore.js"></script>
@@ -22,12 +22,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="scripts/jquery-plugins/custom-jquery-plugin.js"></script>
+  <script src="scripts/components/integer-textbox.js"></script>
   <script src="scripts/components/decimal-textbox.js"></script>
   <script src="scripts/tc-table-dom.js"></script>
   <script src="scripts/fat-table-dom.js"></script>
   <script>
     let defenderTable = TcTableDOM.bind({tableId: 'table_defender'});
     let challengerTable = FatTableDOM.bind({tableId: 'table_challenger', marrTextId: 'marr_text'});
+    IntegerTextbox.bind({id: 'marr_text', maxValue: 100});
   </script>
 </body>
 </html>

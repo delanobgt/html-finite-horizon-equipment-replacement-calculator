@@ -127,10 +127,10 @@ let FatTableDOM = (function() {
       let MARR = Number($marrText.val());
       let $rows = _$get2DArray();
       for (let i = 1; i < $rows.length; i++) {
-        let prevMV = Number(__.toNumber($rows[i-1][1].val()));
-        let curMV = Number(__.toNumber($rows[i][1].val()));
+        let prevMV = Number($rows[i-1][1].val());
+        let curMV = Number($rows[i][1].val());
         let lossMV = prevMV-curMV;
-        let costCapital = MARR*prevMV;
+        let costCapital = (MARR/100.0)*prevMV;
         let expense = Number(__.toNumber($rows[i][4].val()));
         let TC = lossMV + costCapital + expense;
         $rows[i][2].text(__.formatGeneralCurrency(lossMV));
