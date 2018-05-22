@@ -99,7 +99,7 @@ let FatTableDOM = (function() {
       return $newAddingRow.hideDown({instant: true}).delay(30);
     }
 
-    function _updateTableValues(){
+    function _updateTableValues() { 
       _updateEoY();
       _updateComputableFields();
     }

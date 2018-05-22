@@ -11,11 +11,7 @@
 <body>
   <h1>Finite Horizon Equipment Replacement Calculator</h1>
 
-  MARR: <input id="marr_text" type="text" value="10">
-
-  <h2>Defender</h2>
-  <!-- <table id="table_defender"></table><br> -->
-  <table id="table_challenger"></table>
+  MARR: <input id="marr_text" type="text" value="10"><br><br>
 
   <script src="scripts/lib/double-underscore.js"></script>
   <script src="scripts/lib/jquery-3.3.1.js"></script>
@@ -28,19 +24,33 @@
   <script src="scripts/components/fat-table-dom.js"></script>
   <script src="scripts/components/entity.js"></script>
   <script>
-    // let defenderTable = TcTable.bind({tableId: 'table_defender'});
-    // let challengerTable = FatTable.bind({tableId: 'table_challenger', marrTextId: 'marr_text'});
+    let entities = [];
+    function renewEntities(entities) { 
+      for (let i = entities.length-1; i >= 0; i--) {
+        if (!entities[i].isAlive()) entities.splice(i, 1);
+        else { 
+          if (entities[i].tableDOM.updateTableValues)
+            entities[i].tableDOM.updateTableValues();
+        }
+      }
+    };
+
     IntegerTextbox.bind({
       id: 'marr_text', 
-      maxValue: 100, 
-      callback: function() {
-        //todo
-      }
+      maxValue: 100,
+      callback: () => renewEntities(entities)
     });
-    $('body').append(Entity.$manufacture({tableType: 'tc'}).$DOM);
-    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
-    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
-    $('body').append(Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'}).$DOM);
+
+    for (let i = 0; i < 3; i++) {
+      let newEntity = Entity.$manufacture({tableType: 'tc'});
+      entities.push(newEntity);
+      $('body').append(newEntity.$DOM);
+    }
+    for (let i = 0; i < 3; i++) {
+      let newEntity = Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'});
+      entities.push(newEntity);
+      $('body').append(newEntity.$DOM);
+    } 
   </script>
 </body>
 </html>

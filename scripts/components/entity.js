@@ -7,6 +7,7 @@ let Entity = (function() {
     let $btnClose;
     let $table;
     let tableDOM;
+    let alive = true;
     
     _init(options);
     function _init(options) {
@@ -36,6 +37,7 @@ let Entity = (function() {
                     .attr({type: 'button', value: 'X'})
                     .click(function() {
                       $wrapperDiv.remove();
+                      alive = false;
                     });
 
       $wrapperDiv.append(
@@ -55,7 +57,9 @@ let Entity = (function() {
 
     return {
       $DOM: $wrapperDiv,
-      API: null
+      isAlive: function() { return alive; },
+      getTitle: function() { return $spanTitle.text(); },
+      tableDOM: tableDOM
     };
   }
 
