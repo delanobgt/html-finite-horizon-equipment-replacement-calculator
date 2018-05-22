@@ -26,18 +26,34 @@ let Entity = (function() {
                       .css({display: 'inline-block', width: '100px'});
       $inputTitle = $('<input>')
                       .attr({type: 'text'})
-                      .css({display: 'none', width: '100px'});
+                      .css({display: 'none', width: '100px'})
+                      .focusin(function() {
+                        $spanTitle.hide(0);
+                        $inputTitle.val($spanTitle.text());
+                      }).focusout(function() {
+                        if ($inputTitle.val() !== '')
+                          $spanTitle.text($inputTitle.val());
+                        $spanTitle.show(0);
+                        $inputTitle.val('');
+                        $inputTitle.hide(0);
+                      }).keydown(function(e) {
+                        if (e.keyCode == 13) {
+                          $inputTitle.focusout();
+                        }
+                    });
       $btnEditTitle = $('<input>')
                         .attr({type: 'button', value: 'Edit'})
                         .click(function() {
-                          $spanTitle.toggle();
-                          $inputTitle.toggle();
+                          $inputTitle.show(0);
+                          $inputTitle.focusin();
+                          $inputTitle.focus();
                         });
       $btnClose = $('<input>')
                     .attr({type: 'button', value: 'X'})
                     .click(function() {
                       $wrapperDiv.remove();
                       alive = false;
+                      if (options.closeCallback) options.closeCallback();
                     });
 
       $wrapperDiv.append(
@@ -57,8 +73,8 @@ let Entity = (function() {
 
     return {
       $DOM: $wrapperDiv,
-      isAlive: function() { return alive; },
-      getTitle: function() { return $spanTitle.text(); },
+      isAlive: () => alive,
+      getTitle: () => $spanTitle.text(),
       tableDOM: tableDOM
     };
   }

@@ -13,6 +13,22 @@
 
   MARR: <input id="marr_text" type="text" value="10"><br><br>
 
+  <h2>Defender</h2>
+  <div id="defender_add_btn"></div>
+  <br>
+  <br>
+  <br>
+  
+  <h2>Challenger(s)</h2>
+  <br>
+  <br>
+  <br><div id="challenger_add_btn"></div>
+
+  <br>
+  Horizon year: <input id="marr_text" type="text" value="10"><br><br>
+  <input type="button" value="Calculate Optimal">
+  <br>
+
   <script src="scripts/lib/double-underscore.js"></script>
   <script src="scripts/lib/jquery-3.3.1.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -24,8 +40,9 @@
   <script src="scripts/components/fat-table-dom.js"></script>
   <script src="scripts/components/entity.js"></script>
   <script>
-    let entities = [];
-    function renewEntities(entities) { 
+    let defender = null;
+    let challengers = [];
+    function cleanAndUpdateEntities(entities) { 
       for (let i = entities.length-1; i >= 0; i--) {
         if (!entities[i].isAlive()) entities.splice(i, 1);
         else { 
@@ -36,21 +53,87 @@
     };
 
     IntegerTextbox.bind({
-      id: 'marr_text', 
+      id: 'marr_text',
       maxValue: 100,
-      callback: () => renewEntities(entities)
+      callback: () => cleanAndUpdateEntities(entities)
     });
 
-    for (let i = 0; i < 3; i++) {
-      let newEntity = Entity.$manufacture({tableType: 'tc'});
-      entities.push(newEntity);
-      $('body').append(newEntity.$DOM);
+    {
+      let newEntity = Entity.$manufacture({
+                        tableType: 'tc',
+                        closeCallback: function() { defender = null; }
+                      });
+      defender = newEntity;
+      (newEntity.$DOM).insertAfter($('#defender_add_btn').next().next());
     }
-    for (let i = 0; i < 3; i++) {
+    {
       let newEntity = Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'});
-      entities.push(newEntity);
-      $('body').append(newEntity.$DOM);
-    } 
+      challengers.push(newEntity);
+      (newEntity.$DOM).insertBefore($('#challenger_add_btn').prev().prev());
+    }
+    {
+      $('#defender_add_btn')
+        .css({display: 'inline-block'})
+        .append(
+          $('<div></div>')
+            .css({display: 'flex', width: '200px', height: '35px', background: 'cyan', justifyContent: 'center', alignItems: 'center'})
+            .text('TC known already')
+            .click(function() {
+              if (defender === null) {
+                let newEntity = Entity.$manufacture({
+                  tableType: 'tc',
+                  closeCallback: function() { defender = null; }
+                });
+                defender = newEntity;
+                (newEntity.$DOM).insertBefore($('#defender_add_btn').next().next());
+              }
+            })
+        ).append(
+          $('<span></span>')
+            .css({display: 'flex', width: '200px', height: '35px', background: 'yellow', justifyContent: 'center', alignItems: 'center'})
+            .text('MV & Expenses known')
+            .click(function() {
+              if (defender === null) {
+                let newEntity = Entity.$manufacture({
+                  tableType: 'fat',
+                  marrTextId: 'marr_text',
+                  closeCallback: function() { defender = null; }
+                });
+                defender = newEntity;
+                (newEntity.$DOM).insertBefore($('#defender_add_btn').next().next());
+              }
+            })
+        );
+    }
+    {
+      $('#challenger_add_btn')
+        .css({display: 'flex', flexDirection: 'row'})
+        .append(
+          $('<span></span>')
+            .css({display: 'flex', width: '330px', height: '50px', background: 'cyan', justifyContent: 'center', alignItems: 'center'})
+            .text('TC known already')
+            .click(function() {
+                let newEntity = Entity.$manufacture({tableType: 'tc'});
+                challengers.push(newEntity);
+                $('<div></div>')
+                  .css({display: 'block', padding: '1em 0'})
+                  .append(newEntity.$DOM)
+                  .insertBefore($('#challenger_add_btn').prev().prev());
+            })
+        ).append(
+          $('<span></span>')
+            .css({display: 'flex', width: '330px', height: '50px', background: 'yellow', justifyContent: 'center', alignItems: 'center'})
+            .text('MV & Expenses known')
+            .click(function() {
+                let newEntity = Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'});
+                challengers.push(newEntity);
+                $('<div></div>')
+                  .css({display: 'block', padding: '1em 0'})
+                  .append(newEntity.$DOM)
+                  .insertBefore($('#challenger_add_btn').prev().prev());
+            })            
+        );
+    }
   </script>
 </body>
 </html>
