@@ -16,11 +16,63 @@ td > input[type="text"] {
   text-align: right;
   width: 8em;
 }
-tr:nth-child(even) {
+tr:nth-child(odd) {
   background-color: lightgray;
   cursor: pointer;
-  height: 0.55em;
 }
 input {
   height: 1.75em;
+}
+.siimple-footer {
+  font-weight: bold;
+}
+a.github-link:link, a.github-link:visited, a.github-link:hover, a.github-link:active {
+  color: black !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+.black {
+  color: gray;
+}
+br {
+  font-size: 1.25em;
+}
+.number-dot {
+  display: inline-block;
+  /* border: 0.2em solid rgb(20, 167, 119); */
+  border: 0.2em solid rgb(26, 221, 159);
+  border-radius: 100%;
+  width: 1.1em;
+  height: 1.1em;
+  padding: 0.4em;
+  color: rgb(26, 221, 159);
+  background: white;
+  /* color: white;
+  background: rgb(26, 221, 159); */
+}
+
+.number-dot--1 {
+  color: rgb(87, 96, 125);
+  background: white; 
+  border: 0.2em solid rgb(87, 96, 125);
+}
+.number-dot--2 {
+  color: rgb(72, 148, 240);
+  background: white; 
+  border: 0.2em solid rgb(72, 148, 240);
+}
+.number-dot--3 {
+  color: rgb(244, 91, 147);
+  background: white; 
+  border: 0.2em solid rgb(244, 91, 147);
+}
+.number-dot--4 {
+  color: rgb(255, 191, 0);
+  background: white; 
+  border: 0.2em solid rgb(255, 191, 0);
+}
+.my-footer {
+  color: white;
+  background: gray;
+  padding: 0.6em;
 }

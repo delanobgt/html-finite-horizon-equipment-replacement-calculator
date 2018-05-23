@@ -2,6 +2,7 @@ let FatTableDOM = (function() {
   function instance(options) { 
     //jQuery object cache
     let $table;
+    let $tbody;
     let $marrText;
 
     _init(options);
@@ -12,39 +13,45 @@ let FatTableDOM = (function() {
       if (options.$marrText) $marrText = options.$marrText;
       else $marrText = $('#'+options.marrTextId);
 
+      $table.addClass('siimple-table');
+      
       //add a header
-      $('<tr></tr>').append(
-        $('<th></th>').html('EoY<br><em>k</em>')
-      ).append(
-        $('<th></th>').text('MV')
-      ).append(
-        $('<th></th>').html('Loss of MV<br>during year <em>k</em>')
-      ).append(
-        $('<th></th>').html('Cost of capital<br><em>i*MV<sub>k-1</sub></em>')
-      ).append(
-        $('<th></th>').html('Annual<br>expenses <em>E<sub>k</sub></em>')
-      ).append(
-        $('<th></th>').html('Total Marginal<br>Cost <em>TC<sub>k</sub></em>')
-      ).append(
-        $('<th></th>').html('&nbsp;')
+      $('<thead></thead>').addClass('siimple-table-header').append(
+        $('<tr></tr>').addClass('siimple-table-row').append(
+          $('<th></th>').addClass('siimple-table-cell').html('EoY<br><em>k</em>')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').text('MV')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').html('Loss of MV<br>during year <em>k</em>')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').html('Cost of capital<br><em>i*MV<sub>k-1</sub></em>')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').html('Annual<br>expenses <em>E<sub>k</sub></em>')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').html('Total Marginal<br>Cost <em>TC<sub>k</sub></em>')
+        ).append(
+          $('<th></th>').addClass('siimple-table-cell').html('&nbsp;')
+        )
       ).appendTo($table);
+
+      $tbody = $('<tbody></tbody>').addClass('siimple-table-body').appendTo($table);
 
       //add some rows to it
       for (let i = 0; i <= 3; i++) {
         if (i > 0) _makeInputRow()
-                    .appendTo($table)
+                    .appendTo($tbody)
                     .showUp();
         _makeAddingRow()
-          .appendTo($table)
+          .appendTo($tbody)
           .showUp();
         _updateEoY();
       }
 
       // give some contraints/exceptions to the table
-      $table.find('tr:nth-child(2), tr:nth-child(2) td').delay(500).unbind();
-      $table.find('tr:nth-child(3) td:nth-child(5) input').delay(500).remove();
-      $table.find('tr:nth-child(3) td:nth-child(7) input').delay(500).remove();
-      $table.find('tr:nth-child(3) td:nth-child(2) ~ td').delay(500).css('background', 'gray');
+      $table.find('tbody tr:nth-child(1)').delay(250).unbind();
+      $table.find('tbody tr:nth-child(2) td:nth-child(5) input').delay(250).remove();
+      $table.find('tbody tr:nth-child(2) td:nth-child(7) div').delay(250).remove();
+      $table.find('tbody tr:nth-child(2) td:nth-child(2) ~ td').delay(250).css('background', 'lightgray');
 
       //initialize table's values
       _updateTableValues();
@@ -53,7 +60,8 @@ let FatTableDOM = (function() {
     function _makeInputRow() {
       let $newMvText = DecimalTextbox.manufacture(_updateComputableFields);
       let $newExpText = DecimalTextbox.manufacture(_updateComputableFields);
-      let $newRemoveBtn = $('<input></input>')
+      let $newRemoveBtn = $('<div></div>')
+                            .addClass('siimple-close')
                             .attr({type: 'button', value: 'X'})
                             .click(function() {
                               let $removableInputRow = $(this).closest('tr');
@@ -61,34 +69,34 @@ let FatTableDOM = (function() {
                               $removableAddingRow.hideDown({remove: true});
                               $removableInputRow.hideDown({remove: true}, _updateTableValues);
                             });
-      let $newInputRow =  $('<tr></tr>').append(
-                            $('<td></td>').append($('<p></p>'))
+      let $newInputRow =  $('<tr></tr>').addClass('siimple-table-row').append(
+                            $('<td></td>').addClass('siimple-table-cell')
                           ).append(
-                            $('<td></td>').append($newMvText)
+                            $('<td></td>').addClass('siimple-table-cell').append($newMvText)
                           ).append(
-                            $('<td></td>').append($('<p></p>'))
+                            $('<td></td>').addClass('siimple-table-cell')
                           ).append(
-                            $('<td></td>').append($('<p></p>'))
+                            $('<td></td>').addClass('siimple-table-cell')
                           ).append(
-                            $('<td></td>').append($newExpText)
+                            $('<td></td>').addClass('siimple-table-cell').append($newExpText)
                           ).append(
-                            $('<td></td>').append($('<p></p>'))
+                            $('<td></td>').addClass('siimple-table-cell')
                           ).append(
-                            $('<td></td>').append($newRemoveBtn)
+                            $('<td></td>').addClass('siimple-table-cell').append($newRemoveBtn)
                           );
       return $newInputRow.hideDown({instant: true}).delay(30);
     }
 
     function _makeAddingRow() {
-      let $newAddingRow = $('<tr></tr>').append(
+      let $newAddingRow = $('<tr></tr>').addClass('siimple-table-row').append(
                             $('<td></td>')
                               .attr('colspan', 7)
-                              .mouseenter(function() {
-                                $(this).css({background: 'blue'});
-                              }).mouseleave(function() {
-                                $(this).css({background: 'lightgray'});
-                              })
-                          ).mousedown(function() {
+                              .css({height: '0.25em'})
+                          ).mouseenter(function() {
+                            $(this).css({background: 'blue'});
+                          }).mouseleave(function() {
+                            $(this).css({background: 'lightgray'});
+                          }).mousedown(function() {
                             let $newInputRow = _makeInputRow()
                                                 .insertAfter($(this))
                                                 .showUp();
@@ -105,18 +113,23 @@ let FatTableDOM = (function() {
     }
 
     function _updateEoY() {
-      $table.find('tr:nth-child(2n-1) td:nth-child(1) p').each(function(index) {
+      $table.find('tbody tr:nth-child(even) td:nth-child(1)').each(function(index) {
         $(this).text(index);
       });
     }
 
     function _$get2DArray() {
       let $rows = [];
-      $table.find('tr:nth-child(2) ~ tr:nth-child(odd)').each(function(index) {
+      $table.find('tbody tr:nth-child(even)').each(function(index) {
         let $cols = [];
         let $gotColsTd = $(this).children();
         for (let i = 0; i < $gotColsTd.length; i++) {
-          $cols.push($($($gotColsTd[i]).children()[0]));
+          if ($($gotColsTd[i]).children().length == 0) {
+            $cols.push($($gotColsTd[i]));
+          } else {
+            $cols.push($($($gotColsTd[i]).children()[0]));
+          }
+          
         }
         $rows.push($cols);
       });
