@@ -73,6 +73,10 @@ br {
 }
 .my-footer {
   color: white;
-  background: gray;
+  background: rgb(72, 148, 240);
   padding: 0.6em;
+}
+hr {
+  border: 1px solid lightgray;
+  background: gray;
 }

@@ -26,8 +26,9 @@
       <div class="siimple-form-field-helper">Firstly, fill in the MARR value (max. 100%)</div>
       <input id="marr_text" type="text" value="0" class="siimple-input" style="text-align: center; width: 40px; font-size: 1.4em;"><span style="font-weight: bold; font-size: 1.2em;">%</span>
     </div>
-    <br><br>
-
+    
+    <br><hr><br>
+    
     <!-- defender -->
     <div class="siimple-form-field-label" style="font-weight: bold; font-size: 1.5em;">
       <span class="number-dot number-dot--2">2</span> Defender
@@ -35,16 +36,18 @@
     <div class="siimple-form-field-helper">Secondly, choose the type of table to be used.</div>
     <div id="defender_container"></div>
     <div id="defender_add_btn"></div>
-    <br><br><br>
+
+    <br><hr><br>
 
     <!-- challenger -->
     <div class="siimple-form-field-label" style="font-weight: bold; font-size: 1.5em;">
       <span class="number-dot number-dot--3">3</span> Challenger(s)
     </div>
-    <div class="siimple-form-field-helper">Then, add in all of your challengers</div>
+    <div class="siimple-form-field-helper">Thirdly, add in all of your challengers</div>
     <div id="challenger_container"></div>
     <div id="challenger_add_btn"></div>
-    <br><br>
+    
+    <br><hr><br>
 
     <!-- horizon year textbox -->
     <div class="siimple-form-field">
@@ -54,17 +57,14 @@
       <div class="siimple-form-field-helper">Then, specify the horizon year (max. 999 years)</div>
       <input id="horizon_text" type="text" value="0" class="siimple-input" style="text-align: center; width: 40px; font-size: 1.4em;">
     </div>
-    <br><br>
+
+    <br>
 
     <!-- get optimal button -->
     <input type="button" class="siimple-btn siimple-btn--green" style="font-size:2em; height: 2em;" value="▶ Get Optimal Scenario">
     <br><br>
   </div>
 
-  <!-- footer -->
-  <!-- <div class="siimple-footer siimple-footer--grey siimple-footer--fluid" align="center">
-    Made with <img src="res/icons8-heart-outline-20.png"> by &nbsp;<img src="res/icons8-github-20.png"> <a href="https://github.com/delanobgt" class="github-link" style="color: black">delanobgt</a>
-  </div> -->
   <div class="my-footer" align="center">
     Made with <img src="res/icons8-heart-outline-20.png"> by &nbsp;<img src="res/icons8-github-20.png"> <a href="https://github.com/delanobgt" class="github-link" style="color: black">delanobgt</a>
   </div>
@@ -78,9 +78,12 @@
   <script src="scripts/components/tc-table-dom.js"></script>
   <script src="scripts/components/fat-table-dom.js"></script>
   <script src="scripts/components/entity.js"></script>
+  <script src="scripts/components/add-entity-button.js"></script>
   <script>
-    let defender = null;
-    let challengers = [];
+    let globals = {
+      defender: null,
+      challengers: []
+    };
     function cleanAndUpdateEntities(entities) { 
       for (let i = entities.length-1; i >= 0; i--) {
         if (!entities[i].isAlive()) entities.splice(i, 1);
@@ -95,8 +98,8 @@
       id: 'marr_text',
       maxValue: 100,
       callback: function() {
-        cleanAndUpdateEntities([defender]);
-        cleanAndUpdateEntities(challengers);
+        cleanAndUpdateEntities([globals.defender]);
+        cleanAndUpdateEntities(globals.challengers);
       }
     });
     IntegerTextbox.bind({
@@ -104,73 +107,18 @@
       maxValue: 999
     });
 
-    {
-      $('#defender_add_btn')
-        .css({display: 'inline-block'})
-        .append(
-          $('<div></div>')
-            .css({display: 'flex', width: '300px', height: '35px', background: 'cyan', justifyContent: 'center', alignItems: 'center'})
-            .text('TC known already')
-            .click(function() {
-              if (defender === null) {
-                let newEntity = Entity.$manufacture({
-                  tableType: 'tc',
-                  closeCallback: function() { 
-                    defender = null; 
-                    $('#defender_add_btn').fadeIn();
-                  }
-                });
-                defender = newEntity;
-                newEntity.$DOM.appendTo($('#defender_container'));
-                $('#defender_add_btn').fadeOut();
-              }
-            })
-        ).append(
-          $('<span></span>')
-            .css({display: 'flex', width: '300px', height: '35px', background: 'yellow', justifyContent: 'center', alignItems: 'center'})
-            .text('MV & Expenses known')
-            .click(function() {
-              if (defender === null) {
-                console.log('lol');
-                let newEntity = Entity.$manufacture({
-                  tableType: 'fat', 
-                  marrTextId: 'marr_text',
-                  closeCallback: function() { 
-                    defender = null;
-                    $('#defender_add_btn').fadeIn();
-                  }
-                });
-                defender = newEntity;
-                console.log(defender);
-                newEntity.$DOM.appendTo($('#defender_container'));
-                $('#defender_add_btn').fadeOut();
-              }
-            })
-        );
-    }
-    {
-      $('#challenger_add_btn')
-        .css({display: 'flex', flexDirection: 'row'})
-        .append(
-          $('<span></span>')
-            .css({display: 'flex', width: '50%', height: '50px', background: 'cyan', justifyContent: 'center', alignItems: 'center'})
-            .text('TC known already')
-            .click(function() {
-                let newEntity = Entity.$manufacture({tableType: 'tc'});
-                challengers.push(newEntity);
-                newEntity.$DOM.appendTo($('#challenger_container'));
-            })
-        ).append(
-          $('<span></span>')
-            .css({display: 'flex', width: '50%', height: '50px', background: 'yellow', justifyContent: 'center', alignItems: 'center'})
-            .text('MV & Expenses known')
-            .click(function() {
-                let newEntity = Entity.$manufacture({tableType: 'fat', marrTextId: 'marr_text'});
-                challengers.push(newEntity);
-                newEntity.$DOM.appendTo($('#challenger_container'));
-            })            
-        );
-    }
+    AddEntityButton.bind({
+      buttonId: 'defender_add_btn',
+      containerId: 'defender_container',
+      type: 'defender',
+      globals: globals
+    });
+    AddEntityButton.bind({
+      buttonId: 'challenger_add_btn',
+      containerId: 'challenger_container',
+      type: 'challenger',
+      globals: globals
+    });
   </script>
 </body>
 </html>

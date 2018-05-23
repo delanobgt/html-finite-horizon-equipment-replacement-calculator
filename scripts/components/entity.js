@@ -62,7 +62,7 @@ let Entity = (function() {
                     .addClass('siimple-btn siimple-btn--red')
                     .attr({type: 'button', value: 'X'})
                     .click(function() {
-                      $wrapperDiv.remove();
+                      $wrapperDiv.parent().remove();
                       alive = false;
                       if (options.closeCallback) options.closeCallback();
                     });
@@ -97,7 +97,9 @@ let Entity = (function() {
     }
 
     return {
-      $DOM: $wrapperDiv,
+      $DOM: $('<div></div>')
+              .css({textAlign: 'center'})
+              .append($wrapperDiv),
       isAlive: () => alive,
       getTitle: () => $spanTitle.text(),
       tableDOM: tableDOM
