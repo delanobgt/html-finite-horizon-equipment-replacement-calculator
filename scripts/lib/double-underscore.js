@@ -17,8 +17,19 @@ let __ = (function() {
     return numberToken;
   }
 
+  function constructArray(dimensions, value, pos) {
+    if (pos === undefined) return constructArray(dimensions, value, 0);
+    if (pos >= dimensions.length) return value;
+    let newArray = [];
+    for (let i = 0; i < dimensions[pos]; i++) {
+      newArray.push(constructArray(dimensions, value, pos+1));
+    }
+    return newArray;
+  }
+
   return {
     formatGeneralCurrency: formatGeneralCurrency,
-    toNumber: toNumber
+    toNumber: toNumber,
+    constructArray: constructArray
   };
 })();

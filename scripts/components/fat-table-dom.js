@@ -144,7 +144,7 @@ let FatTableDOM = (function() {
         let curMV = Number($rows[i][1].val());
         let lossMV = prevMV-curMV;
         let costCapital = (MARR/100.0)*prevMV;
-        let expense = Number(__.toNumber($rows[i][4].val()));
+        let expense = __.toNumber($rows[i][4].val());
         let TC = lossMV + costCapital + expense;
         $rows[i][2].text(__.formatGeneralCurrency(lossMV));
         $rows[i][3].text(__.formatGeneralCurrency(costCapital));
@@ -154,9 +154,10 @@ let FatTableDOM = (function() {
 
     function getTcList() {
       let tcList = [];
-      $table.find('input[type="text"]').each(function(index) {
-        tcList.push(Number($(this).val()));
+      $table.find('tbody tr td:nth-child(6)').each(function(index) {
+        tcList.push(__.toNumber($(this).text()));
       });
+      tcList.shift();
       return tcList;
     }
 

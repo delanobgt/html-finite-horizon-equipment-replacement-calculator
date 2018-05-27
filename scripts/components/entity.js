@@ -23,9 +23,9 @@ let Entity = (function() {
       $wrapperDiv.css({display: 'inline-block'});
       $spanTitle =  $('<span></span>')
                       .css({background: 'rgb(175, 245, 220)', fontWeight: 'bold'})  
-                      .css({display: 'inline-block', width: '150px', fontSize: '1.7em'})
+                      .css({display: 'inline-block', width: '170px', fontSize: '1.7em'})
                       .addClass('siimple-code siimple-tip siimple-tip--navy')
-                      .text(' as');
+                      .text('[name here]');
       $inputTitle = $('<input>')
                       .addClass('siimple-input')
                       .attr({type: 'text'})

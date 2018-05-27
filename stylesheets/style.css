@@ -73,10 +73,18 @@ br {
 }
 .my-footer {
   color: white;
-  background: rgb(72, 148, 240);
+  background: rgb(26, 221, 159);
+  font-weight: bold;
   padding: 0.6em;
 }
 hr {
   border: 1px solid lightgray;
   background: gray;
+}
+.green {
+  color: rgb(26,221,159);
+}
+ol {
+  font-weight: bold;
+  font-size: 1.2em;
 }
