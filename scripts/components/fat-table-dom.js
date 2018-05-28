@@ -84,7 +84,8 @@ let FatTableDOM = (function() {
                           ).append(
                             $('<td></td>').addClass('siimple-table-cell').append($newRemoveBtn)
                           );
-      return $newInputRow.hideDown({instant: true}).delay(30);
+      $newInputRow.find('input').hide(0);
+      return $newInputRow.hide(0);
     }
 
     function _makeAddingRow() {
@@ -104,7 +105,7 @@ let FatTableDOM = (function() {
                               .insertAfter($newInputRow)
                               .showUp(_updateTableValues);
                           });
-      return $newAddingRow.hideDown({instant: true}).delay(30);
+      return $newAddingRow.hide(0);
     }
 
     function _updateTableValues() { 
@@ -161,10 +162,34 @@ let FatTableDOM = (function() {
       return tcList;
     }
 
+    function feedWithJson(json) {
+      $.when(
+        $tbody.find('tr:nth-child(3) ~ tr').remove()
+      ).then(() => {
+        for (let i = 0; i < json.length-1; i++) {
+          _makeInputRow()
+            .appendTo($tbody)
+            .showUp();
+          _makeAddingRow()
+            .appendTo($tbody)
+            .showUp();
+        }
+        _updateEoY();
+        $table.find('tbody tr td:nth-child(2) input').each(function(index) {
+          $(this).val(json[index][0]);
+        });
+        $table.find('tbody tr td:nth-child(5) input').each(function(index) {
+          $(this).val(json[index+1][1]);
+        });
+        _updateComputableFields();
+      })
+    }
+
     //public-ly exposed function
     return {
       getTcList: getTcList,
-      updateTableValues: _updateTableValues
+      updateTableValues: _updateTableValues,
+      feedWithJson: feedWithJson
     };
   }
 

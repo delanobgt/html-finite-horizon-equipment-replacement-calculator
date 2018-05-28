@@ -15,7 +15,8 @@
       <span class="siimple-navbar-title" href="#"><span class="black">Finite Horizon</span> Equipment Replacement Calculator</span>
     </div>
     <div class="siimple-layout--right">
-      <a id="upload_excel" class="siimple-navbar-link"><img src="res/icons8-upload-20.png"> UPLOAD EXCEL</a>
+      <input id="upload_excel_file" type="file" style="display:none;">
+      <a id="upload_excel_btn" class="siimple-navbar-link"><img src="res/icons8-upload-20.png"> UPLOAD EXCEL</a>
     </div>
   </div>
   
@@ -82,6 +83,8 @@
     Made with <img src="res/icons8-heart-outline-20.png"> by <a href="https://github.com/delanobgt" class="github-link" style="color: black"><img src="res/icons8-github-20.png"> delanobgt</a>
   </div>
 
+  <script src="scripts/lib/xlsx.js"></script>
+  <script src="scripts/lib/jszip.js"></script>
   <script src="scripts/lib/double-underscore.js"></script>
   <script src="scripts/lib/jquery-3.3.1.js"></script>
   <script src="scripts/lib/pwc-calculator.js"></script>
@@ -162,7 +165,6 @@
       });
       return calcResult;
     }
-
     function hideResultBox() {
       $('#result_box').slideUp();
     }
@@ -174,7 +176,6 @@
       });
       $('#result_box').slideDown();
     }
-
     $('#calc_btn').click(() => {
       if (globals.defender) cleanAndUpdateEntities([globals.defender]);
       cleanAndUpdateEntities(globals.challengers);
@@ -191,9 +192,65 @@
       showResultBox(calcResult);
     });
 
-    $('#upload_excel').click(() => {
-      alert("hahaha");
+    $('#upload_excel_btn').click(() => {
+      $('#upload_excel_file').click();
     });
+    $(function() {
+        let oFileIn = document.getElementById('upload_excel_file');
+        if (oFileIn.addEventListener) {
+            oFileIn.addEventListener('change', fileUploaded, false);
+        }
+    });
+    function fileUploaded(oEvent) {
+      // Get The File From The Input
+      let oFile = oEvent.target.files[0];
+      let sFilename = oFile.name;
+      // Create A File Reader HTML5
+      let reader = new FileReader();
+      // Ready The Event For When A File Gets Selected
+      reader.onload = function(e) {
+          let data = e.target.result;
+          let cfb = XLS.CFB.read(data, {type: 'binary'});
+          let wb = XLS.parse_xlscfb(cfb);
+          let jsonArray = [];
+          // Loop Over Each Sheet
+          wb.SheetNames.forEach(function(sheetName) {
+              var range = XLS.utils.decode_range(wb.Sheets[sheetName]['!ref']);
+              range.s.r = 6; // <-- zero-indexed, so setting to 1 will skip row 0
+              wb.Sheets[sheetName]['!ref'] = XLS.utils.encode_range(range);
+              // Obtain The Current Row As CSV
+              let json = XLS.utils.sheet_to_row_object_array(wb.Sheets[sheetName]);
+              let singleArray = json.map(e => {
+                if (e["Total Marginal Cost"]) return [e["Total Marginal Cost"]];
+                else return [e["Market Value (MV)"], e["Annual Expenses"]];
+              });
+              jsonArray.push(singleArray);
+          });
+          $('#defender_container').empty();
+          $('#challenger_container').empty();
+          globals.defender = null;
+          globals.challengers = [];
+          for (let i = 0; i < jsonArray.length; i++) {
+            if (i === 0) {
+              if (jsonArray[i][0].length === 1) {
+                $('#defender_add_btn span:nth-child(1)').delay(i*50).click();
+              } else {
+                $('#defender_add_btn span:nth-child(2)').delay(i*50).click();
+              }
+              globals.defender.tableDOM.feedWithJson(jsonArray[i]);
+            } else {
+              if (jsonArray[i][0].length === 1) {
+                $('#challenger_add_btn span:nth-child(1)').delay(i*50).click();
+              } else {
+                $('#challenger_add_btn span:nth-child(2)').delay(i*50).click();
+              }
+              globals.challengers[i-1].tableDOM.feedWithJson(jsonArray[i]);
+            }
+          }
+      };
+      // Tell JS To Start Reading The File.. You could delay this if desired
+      reader.readAsBinaryString(oFile);
+    }
   </script>
 </body>
 </html>

@@ -56,7 +56,8 @@ let TcTableDOM = (function() {
                           ).append(
                             $('<td></td>').addClass('siimple-table-cell').append($newRemoveBtn)
                           );
-      return $newInputRow.hideDown({instant: true}).delay(30);
+      $newInputRow.find('input').hide(0);
+      return $newInputRow.hide(0);
     }
 
     function _makeAddingRow() {
@@ -77,7 +78,7 @@ let TcTableDOM = (function() {
                               .insertAfter($newInputRow)
                               .showUp(_updateEoY);
                           });
-      return $newAddingRow.hideDown({instant: true}).delay(30);
+      return $newAddingRow.hide(0);
     }
 
     function _updateEoY() {
@@ -94,9 +95,31 @@ let TcTableDOM = (function() {
       return tcList;
     }
 
+    function feedWithJson(json) {
+      $.when(
+        $tbody.find('tr:nth-child(1) ~ tr').remove()
+      ).then(() => {
+        for (let row of json) {
+          _makeInputRow()
+            .appendTo($tbody)
+            .show(0)
+            .find('*').show(0);
+          _makeAddingRow()
+            .appendTo($tbody)
+            .show(0)
+            .find('*').show(0);
+        }
+        _updateEoY();
+        $table.find('input[type="text"]').each(function(index) {
+          $(this).val(json[index][0]);
+        });
+      })
+    }
+
     //public-ly exposed function
     return {
-      getTcList: getTcList
+      getTcList: getTcList,
+      feedWithJson: feedWithJson
     };
   }
 

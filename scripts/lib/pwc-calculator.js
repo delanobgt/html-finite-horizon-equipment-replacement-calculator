@@ -59,8 +59,8 @@ PWCCalculator = (function() {
   }
 
   function calc(options) {
-    memo = __.constructArray([1000, 50, 50], -1);
-    trace = __.constructArray([1000, 50, 50], null);
+    memo = __.constructArray([1005, 55, 55], -1);
+    trace = __.constructArray([1005, 55, 55], null);
     MARR = options.MARR;
     horizonYear = options.horizonYear;
     machineNames = options.machineNames;

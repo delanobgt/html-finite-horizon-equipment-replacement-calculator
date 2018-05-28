@@ -1,6 +1,6 @@
 // add custom jQuery plugin for show/hide functionality
 $.fn.showUp = function(callback) {
-  let delay = 80;
+  let delay = 120;
   if (this.find('input').length) {
     let context = this;
     if (callback) context.slideDown(0, () => context.find('input').slideDown(delay, callback));
@@ -13,7 +13,7 @@ $.fn.showUp = function(callback) {
   }
 };
 $.fn.hideDown = function(options, callback) {
-  let delay = 80;
+  let delay = 30;
   let context = this;
   if (this.find('input').length) { // for textboxes
     let curDelay = (options && options.instant) ? 0 : delay;
@@ -27,7 +27,7 @@ $.fn.hideDown = function(options, callback) {
     });
     return context;
   } else {  // for adding rows
-    let curDelay = (options && options.instant) ? 0 : 50;
+    let curDelay = (options && options.instant) ? 0 : delay;
     this.slideUp(curDelay, () => {
       if(options && options.remove) {
         if (callback) $.when(this.remove()).then(callback());
