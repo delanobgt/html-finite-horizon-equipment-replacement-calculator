@@ -102,6 +102,7 @@ let Entity = (function() {
               .append($wrapperDiv),
       isAlive: () => alive,
       getTitle: () => $spanTitle.text(),
+      setTitle: (title) => $spanTitle.text(title),
       tableDOM: tableDOM
     };
   }

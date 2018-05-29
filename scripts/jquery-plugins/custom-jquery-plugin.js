@@ -1,6 +1,6 @@
 // add custom jQuery plugin for show/hide functionality
 $.fn.showUp = function(callback) {
-  let delay = 120;
+  let delay = 150;
   if (this.find('input').length) {
     let context = this;
     if (callback) context.slideDown(0, () => context.find('input').slideDown(delay, callback));

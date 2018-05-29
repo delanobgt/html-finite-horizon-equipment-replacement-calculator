@@ -16,6 +16,7 @@
     </div>
     <div class="siimple-layout--right">
       <input id="upload_excel_file" type="file" style="display:none;">
+      <a id="download_excel_btn" href="res/fhec_template.xls" class="siimple-navbar-link" download><img src="res/icons8-downloading-updates-filled-20.png"> DOWNLOAD EXCEL TEMPLATE</a>
       <a id="upload_excel_btn" class="siimple-navbar-link"><img src="res/icons8-upload-20.png"> UPLOAD EXCEL</a>
     </div>
   </div>
@@ -212,19 +213,26 @@
           let data = e.target.result;
           let cfb = XLS.CFB.read(data, {type: 'binary'});
           let wb = XLS.parse_xlscfb(cfb);
+          let tableNames = [];
           let jsonArray = [];
           // Loop Over Each Sheet
           wb.SheetNames.forEach(function(sheetName) {
               var range = XLS.utils.decode_range(wb.Sheets[sheetName]['!ref']);
-              range.s.r = 6; // <-- zero-indexed, so setting to 1 will skip row 0
+              range.s.r = 7; // <-- zero-indexed, so setting to 1 will skip row 0
               wb.Sheets[sheetName]['!ref'] = XLS.utils.encode_range(range);
               // Obtain The Current Row As CSV
               let json = XLS.utils.sheet_to_row_object_array(wb.Sheets[sheetName]);
-              let singleArray = json.map(e => {
-                if (e["Total Marginal Cost"]) return [e["Total Marginal Cost"]];
-                else return [e["Market Value (MV)"], e["Annual Expenses"]];
-              });
-              jsonArray.push(singleArray);
+              if (sheetName.startsWith('MARR_HorizonYear')) {
+                $('#marr_text').val(Number(json[0]['MARR (%)']));
+                $('#horizon_text').val(Number(json[0]['Horizon Year (year)']));
+              } else {
+                let singleArray = json.map(e => {
+                  if (e["Total Marginal Cost"]) return [e["Total Marginal Cost"]];
+                  else return [e["Market Value (MV)"], e["Annual Expenses"]];
+                });
+                jsonArray.push(singleArray);
+                tableNames.push(sheetName.slice(0, 12));
+              }
           });
           $('#defender_container').empty();
           $('#challenger_container').empty();
@@ -237,6 +245,7 @@
               } else {
                 $('#defender_add_btn span:nth-child(2)').delay(i*50).click();
               }
+              globals.defender.setTitle(tableNames[0]);
               globals.defender.tableDOM.feedWithJson(jsonArray[i]);
             } else {
               if (jsonArray[i][0].length === 1) {
@@ -244,6 +253,7 @@
               } else {
                 $('#challenger_add_btn span:nth-child(2)').delay(i*50).click();
               }
+              globals.challengers[i-1].setTitle(tableNames[i]);
               globals.challengers[i-1].tableDOM.feedWithJson(jsonArray[i]);
             }
           }
